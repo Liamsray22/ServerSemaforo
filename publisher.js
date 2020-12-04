@@ -1,4 +1,4 @@
-const publisher = (client, req, res) => {
+const publisher = (client, req, res, topic) => {
     var message = req.body.mensaje
     
     client.on('connect', ()=>{

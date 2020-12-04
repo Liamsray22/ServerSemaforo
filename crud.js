@@ -36,7 +36,7 @@ console.log('===================', req.body)
 const PostHistory = (mongoose,req, res)=>{
 var lugar = req.body.lugar
 var uso = req.body.uso
-var fecha = req.body.fecha
+var fecha = new Date()
 var idUsuario = req.body.idUsuario
 
 // compile schema to model
@@ -46,7 +46,7 @@ var Historial = mongoose.model('Historial', HistorialModel.HistorialSchema, 'his
 var Historialx = new Historial({ 
           lugar :lugar,
           uso:uso,
-            fecha:fecha,
+            fecha:new Date(),
              idUsuario:idUsuario
  });
 
@@ -90,6 +90,21 @@ const Get = (mongoose, req,res)=>{
   //  });
 }
 
+const GetHistory = (mongoose, id, res)=>{
+
+  var Historial = mongoose.model('Historial', HistorialModel.HistorialSchema, 'historial');
+  Historial.find({idUsuario:id},(function (err, result) { 
+if (err){ 
+  console.log(err)
+  return res.status(500) 
+}else{ 
+  console.log("Result :", result)  
+  return res.status(200).send(result)
+} 
+})); 
+}
+
+
 const GetUsers = (mongoose, id) =>{
   const _id = id;
 const schema = new mongoose.Schema({ _id: mongoose.ObjectId }, { versionKey: false });
@@ -104,4 +119,4 @@ return doc._id
 // typeof doc._id; // 'object'
 // doc._id instanceof mongoose.Types.ObjectId;
 }
-module.exports = {Post, Get, PostHistory, GetUsers}
+module.exports = {Post, Get, PostHistory, GetUsers, GetHistory}

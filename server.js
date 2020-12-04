@@ -21,8 +21,6 @@ mongoose.connect('mongodb://localhost/registroDB',{useNewUrlParser: true})
 
 
 //Clientes del Broker
-var Bocina = mqtt.connect('mqtt://localhost:1883')
-var ElFanias = mqtt.connect('mqtt://localhost:1883')
 
 
 //Topico del broker
@@ -30,6 +28,7 @@ var topic ='Liam'
 
 //Variables Utiles
 var algo = "default"
+var algo2 = "default"
 
 
 //MQTT subscriber
@@ -46,6 +45,22 @@ client.on('message',(topic, message)=>{
 client.on('connect',()=>{
 
     client.subscribe(topic)
+
+})
+
+var client2 = mqtt.connect('mqtt://localhost:1234')
+
+client2.on('message',(topic, message)=>{
+
+    message = message.toString()
+    console.log(message)
+    algo2 = message
+
+})
+
+client2.on('connect',()=>{
+
+    client2.subscribe(topic)
 
 })
 
@@ -72,24 +87,49 @@ app.post('/Historial',(req, res)=>{
   //req.body.idUsuario = loged.idUsuario
   crud.PostHistory(mongoose, req, res)
 })
+
+app.post('/History',(req, res)=>{
+  crud.GetHistory(mongoose, req.body.idUsuario, res)
+
+})
 //===================================================================================
 
 //Publishers====================================================================
 app.post('/Boton',(req, res) => {
-publisher.publisher(ElFanias, req, res)
+// publisher.publisher(ElFanias, req, res, topic)
+var ElFanias = mqtt.connect('mqtt://localhost:1883')
+
+var message = req.body.mensaje
+    
+ElFanias.on('connect', ()=>{
+  ElFanias.publish(topic, message)
+            console.log('Se envio el mensaje ', message, " ")
+    })
+    
+    res.send(message)
 
 })
 
 app.post('/Bocina',(req, res)=>{
-  publisher.publisher(Bocina, req,res)
+  // publisher.publisher(Bocina, req,res, topic)
+  var Bocina = mqtt.connect('mqtt://localhost:1234')
+
+  var message = req.body.mensaje
+    
+  Bocina.on('connect', ()=>{
+    Bocina.publish(topic, message)
+            console.log('Se envio el mensaje ', message, " ")
+    })
+    
+    res.send(message)
 })
 //===============================================================================
 
 
 //Subcribers=================================================================
 app.get('/Bocinas',(req, res)=>{
-  res.send(algo)
-  algo ="default"
+  res.send(algo2)
+  algo2 ="default"
 })
 
 app.get('/Semaforo',(req, res) => {

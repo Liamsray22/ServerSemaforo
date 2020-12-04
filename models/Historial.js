@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const HistorialSchema = mongoose.Schema({
     lugar : String,
     uso : Number,
-    fecha : String,
+    fecha : Date,
     idUsuario : mongoose.Types.ObjectId
   });
 
