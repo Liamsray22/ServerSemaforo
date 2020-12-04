@@ -41,12 +41,12 @@ client.on('message',(topic, message)=>{
     algo = message
 
 })
-
 client.on('connect',()=>{
-
     client.subscribe(topic)
 
 })
+
+//Subcriber 2===========================================================
 
 var client2 = mqtt.connect('mqtt://localhost:1234')
 
@@ -104,10 +104,8 @@ var message = req.body.mensaje
 ElFanias.on('connect', ()=>{
   ElFanias.publish(topic, message)
             console.log('Se envio el mensaje ', message, " ")
-    })
-    
+    })    
     res.send(message)
-
 })
 
 app.post('/Bocina',(req, res)=>{
@@ -135,7 +133,6 @@ app.get('/Bocinas',(req, res)=>{
 app.get('/Semaforo',(req, res) => {
   res.send(algo)
   algo = "default"
-
 })
 //===============================================================================
 
