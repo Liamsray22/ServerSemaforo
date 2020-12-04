@@ -1,5 +1,6 @@
 //const bodyParser = require('body-parser');
 const UserModel = require('./models/Users')
+const HistorialModel = require('./models/Historial')
 
 
 const Post = (mongoose,req, res)=>{
@@ -32,7 +33,34 @@ const Post = (mongoose,req, res)=>{
 console.log('===================', req.body)
 }
 
+const PostHistory = (mongoose,req, res)=>{
+var lugar = req.body.lugar
+var uso = req.body.uso
+var fecha = req.body.fecha
+var idUsuario = req.body.idUsuario
 
+// compile schema to model
+var Historial = mongoose.model('Historial', HistorialModel.HistorialSchema, 'historial');
+
+// a document instance
+var Historialx = new Historial({ 
+          lugar :lugar,
+          uso:uso,
+            fecha:fecha,
+             idUsuario:idUsuario
+ });
+
+// save model to database
+Historialx.save(function (err, data) {
+  if (err){
+    res.send({status:0, result:err})
+  }else{
+    res.send({status:1, result:data})
+  }
+  console.log(data.name + " Se ha registrado un press");
+});
+console.log('===================', req.body)
+}
 
 const Get = (mongoose, req,res)=>{
   var eclave = req.body.eclave
@@ -61,4 +89,19 @@ const Get = (mongoose, req,res)=>{
   //            eusuario:eusuario
   //  });
 }
-module.exports = {Post, Get}
+
+const GetUsers = (mongoose, id) =>{
+  const _id = id;
+const schema = new mongoose.Schema({ _id: mongoose.ObjectId }, { versionKey: false });
+const Model = mongoose.model('MyModel', UserModel.RegistroSchema, 'usuarios');
+
+Model.create({ _id: new mongoose.Types.ObjectId(_id) });
+
+typeof _id; // 'string'
+// `{ _id: '5d273f9ed58f5e7093b549b0' }`
+const doc = Model.findById(_id);
+return doc._id
+// typeof doc._id; // 'object'
+// doc._id instanceof mongoose.Types.ObjectId;
+}
+module.exports = {Post, Get, PostHistory, GetUsers}
